@@ -1,4 +1,4 @@
-Nombres, Roles USM y Paralelo: Benjamin Alejandro Pavez Ortiz, 202173628-K, 201
+Nombres, Roles USM y Paralelo: Benjamin Pavez Ortiz, 202173628-K, 201
                                Angelo Russu Cisterna, 202XXXXXX-X, 201
 
 SO: Windows 11
