@@ -40,7 +40,7 @@ func main() {
 		os.Exit(4)
 	}
 
-	// Leer la respuesta del servidor
+	//Leer la respuesta del servidor
 	var buffer [256]byte
 	n, err := dial.Read(buffer[0:])
 	if err != nil {

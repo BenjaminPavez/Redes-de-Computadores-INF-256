@@ -27,7 +27,7 @@ func main() {
 		if err != nil {
 			continue
 		}
-		strRespt := fmt.Sprintf("Hola Como estas, te saluda el servidor")
+		strRespt := fmt.Sprintf("Hello, %s", string(message[0:n]))  
 		udp.WriteToUDP([]byte(strRespt), addr)
 	}
 }
