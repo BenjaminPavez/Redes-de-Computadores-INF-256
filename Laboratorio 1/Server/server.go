@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -129,53 +130,7 @@ func ClientUDP() (int, string, int) {
 			fmt.Println("Error al enviar los datos de conexión:", err)
 		}
 		return numeroAleatorio, clientIP, clientPort
-		/*
-			strMessage := string(message[0:n])
-			intMessage, err := strconv.Atoi(strMessage)
-			if err != nil {
-				fmt.Println("Error al convertir el mensaje:", err)
-				continue
-			}
-			if intMessage == 1 {
-				strRespt := fmt.Sprintf("%d", numeroAleatorio)
-				_, err = udp.WriteToUDP([]byte(strRespt), addr)
-				if err != nil {
-					fmt.Println("Error al enviar el mensaje:", err)
-				}
-			} else if intMessage == 2 {
-				preguntaAl := rand.Intn(len(QA))
-				//Formatear el mensaje
-				trivia := QA[preguntaAl]
-				fmt.Println("Pregunta para el usuario: ", trivia)
-				strRespt := fmt.Sprintf("%s\n%s\n%s\n%s\n%s", trivia.Question, trivia.Alternatives[0], trivia.Alternatives[1], trivia.Alternatives[2], trivia.Alternatives[3])
-				_, err = udp.WriteToUDP([]byte(strRespt), addr)
-				if err != nil {
-					fmt.Println("Error al enviar el mensaje:", err)
-				}
-				// Leer la respuesta del cliente
-				n, _, err := udp.ReadFromUDP(message[0:])
-				if err != nil {
-					fmt.Println("Error al leer la respuesta del cliente:", err)
-					continue
-				}
-				respuestaCliente := string(message[0:n])
-				intResp, _ := strconv.Atoi(respuestaCliente)
-				fmt.Println("El usuario responde: ", trivia.Alternatives[intResp-1])
-				//Verificar si la respuesta es correcta
-				if trivia.Alternatives[intResp-1] == trivia.Answer {
-					fmt.Println("El usuario respondio correctamente")
-					_, err = udp.WriteToUDP([]byte("correcta"), addr)
-					if err != nil {
-						fmt.Println("Error al enviar el mensaje:", err)
-					}
-				} else {
-					fmt.Println("El usuario respondio incorrectamente")
-					_, err = udp.WriteToUDP([]byte("incorrecta"), addr)
-					if err != nil {
-						fmt.Println("Error al enviar el mensaje:", err)
-					}
-				}
-			|*/
+
 	}
 
 }
@@ -210,22 +165,68 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 			return
 		}
 		numeroPreguntasStr := string(buffer[:n])
-		numeroPreguntas, err := strconv.Atoi(numeroPreguntasStr)
+		numeroPreguntasRecibida, err := strconv.Atoi(numeroPreguntasStr)
 		if err != nil {
 			fmt.Println("Error al convertir el número de preguntas:", err)
 			return
 		}
-		fmt.Printf("Número de preguntas recibido: %d\n", numeroPreguntas)
-
+		fmt.Printf("Número de preguntas recibido: %d\n", numeroPreguntasRecibida)
+		var respuestasCorrectas int = 0
 		for {
-			// Leer el mensaje del cliente
-			n, err := conn.Read(buffer)
-			if err != nil {
-				fmt.Println("Error al leer el mensaje del cliente:", err)
+			if numeroPreguntas == numeroPreguntasRecibida {
+				for i := 0; i < numeroPreguntasRecibida; i++ {
+					// Enviar la pregunta al cliente
+					trivia := QA[i%len(QA)] // Ciclar a través de las preguntas si hay menos preguntas que el número solicitado
+					pregunta := fmt.Sprintf("%s\n1. %s\n2. %s\n3. %s\n4. %s\n", trivia.Question, trivia.Alternatives[0], trivia.Alternatives[1], trivia.Alternatives[2], trivia.Alternatives[3])
+					_, err := conn.Write([]byte(pregunta))
+					if err != nil {
+						fmt.Println("Error al enviar la pregunta:", err)
+						break
+					}
+					// Leer la respuesta del cliente
+					n, err := conn.Read(buffer)
+					if err != nil {
+						fmt.Println("Error al leer la respuesta del cliente:", err)
+						break
+					}
+					respuestaCliente := strings.TrimSpace(string(buffer[:n]))
+					fmt.Printf("Respuesta del cliente: %s\n", respuestaCliente)
+
+					// Convertir la respuesta del cliente a un índice de entero
+					respuestaIndex, err := strconv.Atoi(respuestaCliente)
+					if err != nil {
+						fmt.Println("Error al convertir la respuesta del cliente a un índice:", err)
+						_, err = conn.Write([]byte("Respuesta inválida\n"))
+						if err != nil {
+							fmt.Println("Error al enviar la respuesta inválida:", err)
+						}
+						return
+					}
+					// Verificar si la respuesta es correcta
+					if respuestaIndex >= 0 && respuestaIndex < len(trivia.Alternatives) && trivia.Alternatives[respuestaIndex] == trivia.Answer {
+						fmt.Println("Respuesta correcta")
+						respuestasCorrectas++
+						_, err = conn.Write([]byte("Respuesta correcta\n"))
+					} else {
+						fmt.Println("Respuesta incorrecta")
+						_, err = conn.Write([]byte("Respuesta incorrecta\n"))
+					}
+					if err != nil {
+						fmt.Println("Error al enviar la verificación de la respuesta:", err)
+						break
+					}
+				}
+				// Enviar el número de respuestas correctas al cliente
+				resultado := fmt.Sprintf("Número de respuestas correctas: %d\n", respuestasCorrectas)
+				_, err = conn.Write([]byte(resultado))
+				if err != nil {
+					fmt.Println("Error al enviar el resultado:", err)
+				}
+				break
+			} else {
 				break
 			}
-			message := string(buffer[:n])
-			fmt.Print("Mensaje del cliente: ", message)
+
 		}
 	}
 }
