@@ -16,7 +16,7 @@ type Trivia struct {
 	Answer       string
 }
 
-// Array de preguntas y respuestas
+//Array de preguntas y respuestas
 var QA = []Trivia{
 	{
 		Question:     "¿Cuál es el planeta más cercano al Sol?",
@@ -70,17 +70,11 @@ var QA = []Trivia{
 	},
 }
 
-// Función para escribir en el servidor TCP.
-func writeToTCP(conn net.Conn, message string) {
-	_, err := conn.Write([]byte(message))
-	if err != nil {
-		fmt.Println("Error al enviar mensaje TCP:", err)
-	}
-	conn.Close()
-}
+
 
 /*
 La función se encarga de recibir mensajes del cliente y enviar mensajes al cliente
+
 Parametros :
 
 	Nada, no recibe ningun parametro
@@ -103,7 +97,7 @@ func ClientUDP() (int, string, int) {
 	}
 	defer udp.Close()
 	fmt.Println("Server On")
-	// Inicio del Server.
+	
 	var numeroAleatorio int = 0
 	for {
 		if numeroAleatorio == 0 {
@@ -135,6 +129,21 @@ func ClientUDP() (int, string, int) {
 
 }
 
+
+
+/*
+La función se encarga de recibir mensajes del cliente y enviar mensajes al cliente
+
+Parametros :
+
+	numeroPreguntas : int - Número de preguntas que se le enviarán al cliente
+	ip : string - Dirección IP del cliente
+	puerto : int - Puerto del cliente
+
+Retorno :
+
+	Nada, no retorna ningun valor
+*/
 func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 	// Escuchar en el puerto especificado
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", puerto))
@@ -145,7 +154,8 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 	defer listener.Close()
 	fmt.Printf("Servidor escuchando en el puerto %d\n", puerto)
 
-	for {
+	var flag bool = true
+	for flag {
 		// Aceptar una nueva conexión
 		conn, err := listener.Accept()
 		if err != nil {
@@ -171,19 +181,22 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 			return
 		}
 		fmt.Printf("Número de preguntas recibido: %d\n", numeroPreguntasRecibida)
+		if numeroPreguntasRecibida == 404 {
+			fmt.Println("Cliente desconectado")
+			listener.Close()
+		}
 		var respuestasCorrectas int = 0
 		for {
 			if numeroPreguntas == numeroPreguntasRecibida {
 				for i := 0; i < numeroPreguntasRecibida; i++ {
-					// Enviar la pregunta al cliente
-					trivia := QA[i%len(QA)] // Ciclar a través de las preguntas si hay menos preguntas que el número solicitado
+					trivia := QA[i%len(QA)]
 					pregunta := fmt.Sprintf("%s\n1. %s\n2. %s\n3. %s\n4. %s\n", trivia.Question, trivia.Alternatives[0], trivia.Alternatives[1], trivia.Alternatives[2], trivia.Alternatives[3])
 					_, err := conn.Write([]byte(pregunta))
 					if err != nil {
 						fmt.Println("Error al enviar la pregunta:", err)
 						break
 					}
-					// Leer la respuesta del cliente
+
 					n, err := conn.Read(buffer)
 					if err != nil {
 						fmt.Println("Error al leer la respuesta del cliente:", err)
@@ -192,7 +205,6 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 					respuestaCliente := strings.TrimSpace(string(buffer[:n]))
 					fmt.Printf("Respuesta del cliente: %s\n", respuestaCliente)
 
-					// Convertir la respuesta del cliente a un índice de entero
 					respuestaIndex, err := strconv.Atoi(respuestaCliente)
 					if err != nil {
 						fmt.Println("Error al convertir la respuesta del cliente a un índice:", err)
@@ -202,7 +214,6 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 						}
 						return
 					}
-					// Verificar si la respuesta es correcta
 					if respuestaIndex >= 0 && respuestaIndex < len(trivia.Alternatives) && trivia.Alternatives[respuestaIndex] == trivia.Answer {
 						fmt.Println("Respuesta correcta")
 						respuestasCorrectas++
@@ -216,20 +227,25 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 						break
 					}
 				}
-				// Enviar el número de respuestas correctas al cliente
 				resultado := fmt.Sprintf("Número de respuestas correctas: %d\n", respuestasCorrectas)
 				_, err = conn.Write([]byte(resultado))
 				if err != nil {
 					fmt.Println("Error al enviar el resultado:", err)
 				}
 				break
+
 			} else {
 				break
 			}
-
 		}
+		flag = false
+		fmt.Println("Cliente desconectado")
+
 	}
+
 }
+
+
 
 func main() {
 	numeroPregunntas, ip, puerto := ClientUDP()

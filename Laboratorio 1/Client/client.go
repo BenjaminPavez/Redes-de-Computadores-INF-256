@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+
+
 /*
 La función se encarga de mostrar el menú al usuario
 
@@ -35,12 +37,10 @@ func MenuClient() {
 
 	if opt == 1 {
 		serverIP, serverPort, numeroAleatorio := udp.ServerUDP(opt)
-		// Uso de los valores retornados
 		fmt.Printf("IP del servidor: %s\n", serverIP)
 		fmt.Printf("Puerto del servidor: %d\n", serverPort)
 		fmt.Printf("Número aleatorio: %d\n", numeroAleatorio)
 		tcp.ServerTCP(serverIP, serverPort, numeroAleatorio)
-
 	} else if opt == 2 {
 		os.Exit(0)
 	} else {
@@ -48,25 +48,8 @@ func MenuClient() {
 	}
 }
 
+
+
 func main() {
 	MenuClient()
-
-	/*
-		var err error
-		for i := 0; i <  2; i++ {
-			fmt.Print("Escriba el mensaje: ")
-			_, err = fmt.Scanln(&pregunta)
-			if err != nil {
-				fmt.Println("Error al leer el mensaje:", err)
-				return
-			}
-			strTCP, err := tcp.EnviarMensajeTCP(pregunta)
-			if err != nil {
-				fmt.Println("Error:", err)
-				return
-			}
-			fmt.Println("Mensaje enviado a la dirección TCP:", strTCP)
-
-		}
-	*/
 }

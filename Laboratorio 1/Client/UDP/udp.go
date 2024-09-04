@@ -6,8 +6,9 @@ import (
 	"os"
 	"regexp"
 	"strconv"
-	"strings"
 )
+
+
 
 /*
 La función se encarga de limpiar la pantalla
@@ -24,31 +25,7 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J") // Limpiar la pantalla
 }
 
-/*
-La función se encarga de dar formato a la pregunta y sus alternativas
 
-Parametros :
-
-	[]byte : buffer, arreglo de bytes que contiene la pregunta y sus alternativas
-
-Retorno :
-
-	Nada, no retorna ningun valor
-*/
-func formato(buffer []byte) {
-	data := string(buffer[0:])
-	lines := strings.Split(data, "\n")
-	if len(lines) < 5 {
-		fmt.Println("Faltan datos.")
-		return
-	}
-	pregunta := lines[0]
-	alternativas := lines[1:5]
-	fmt.Println("Pregunta:", pregunta)
-	for i, alt := range alternativas {
-		fmt.Printf(" %d. %s\n", i+1, alt)
-	}
-}
 
 /*
 La función se encarga de enviar y recibir mensajes del servidor
@@ -92,11 +69,9 @@ func ServerUDP(opcion int) (string, int, int) {
 		fmt.Println("Error al leer la respuesta del servidor:", err)
 		os.Exit(5)
 	}
-	// Convertir la respuesta a una cadena
 	response := string(buffer[:n])
 
-	// Analizar la respuesta del servidor
-	// Expresión regular para extraer los valores
+
 	re := regexp.MustCompile(`IP:\s*([0-9.]+),\s*Puerto:\s*(\d+),\s*Número Aleatorio:\s*(\d+)`)
 	matches := re.FindStringSubmatch(response)
 
@@ -116,7 +91,6 @@ func ServerUDP(opcion int) (string, int, int) {
 		os.Exit(8)
 	}
 	clearScreen()
-	//Mostrar el número de preguntas
 	fmt.Println("Tendras que responder:", numeroAleatorio, "preguntas")
 	fmt.Println("------------------------------------------------------------------------------------------------")
 	fmt.Println("-------------------------------------El servidor respondio--------------------------------------")
@@ -126,7 +100,6 @@ func ServerUDP(opcion int) (string, int, int) {
 	fmt.Println("2. No")
 	fmt.Print("-> ")
 
-	//Leer la respuesta del usuario
 	var opt2 int
 	_, err = fmt.Scanln(&opt2)
 	if err != nil {
@@ -137,7 +110,7 @@ func ServerUDP(opcion int) (string, int, int) {
 	if opt2 == 1 {
 		return serverIP, serverPort, numeroAleatorio
 	}
-	// En caso de que el usuario elija no comenzar, se debe retornar algo
+	//En caso de que el usuario elija no comenzar, se debe retornar algo
 	return "", 0, 0
 
 }
