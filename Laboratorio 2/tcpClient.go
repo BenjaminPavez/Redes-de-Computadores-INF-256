@@ -8,7 +8,7 @@ import (
 )
 
 /*
-La función se encarga de conectarse al servidor TCP y enviarle un número aleatorio
+La función se conecta a un servidor TCP y envía el numero del grupo, el servidor responderá con una pregunta
 
 Parametros :
 
@@ -71,5 +71,5 @@ func ServerTCP(ip string, port int) (*net.TCPAddr, error) {
 }
 
 func main() {
-	ServerTCP("192.168.1.188", 8080)
+	ServerTCP("192.168.1.188", 8080) //La ip y el puerto corresponden al Lab de Redes
 }

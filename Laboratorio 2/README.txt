@@ -1,27 +1,16 @@
-GOCLIENT
---------------------------------
-Juan Cucurella / Nicolás Rodríguez
---------------------------------
-Instrucciones:
+Nombres, Roles USM y Paralelo: Benjamin Pavez Ortiz, 202173628-K, 201
+                               Angelo Russu Cisterna, 202173509-7, 201
 
-- Descomprimir el proyecto en el directorio de trabajo del laboratorio
-- Moverse a la carpeta GoClient:
+SO: Windows 11
 
-    $ cd ./goclient
+IDE: Visual Studio Code
 
-- Ejecutar los siguientes comandos para inicializar el módulo e instalar las dependencias:
+Instrucciones de uso:
 
-    $ go mod init github.com/goclient
+1) La tarea funciona correctamente 
 
-    $ go mod tidy
+2) Para ejecutar la tarea, primero dirijase al directorio 'server' y en otra terminal dirijase al directorio 'cliente'
 
-- Modificar el código de manera que los datos correspondan a su grupo de trabajo y se realice la interacción esperada
+3) Una vez estando en cada directorio, primero ejecute el servidor con 'go run server.go'
 
-- Ejecutar el programa:
-
-    $ go run main.go
-
---------------------------------
-REQUERIMIENTOS
---------------------------------
-- Go versión 1.22+
+4) Luego ejecute el cliente con 'go run client.go'

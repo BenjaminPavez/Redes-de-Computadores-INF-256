@@ -1,7 +1,7 @@
 # Redes-de-Computadores-INF-256
 
 Laboratorio 1: Go  
-Laboratorio 2:  
+Laboratorio 2: Go  
 Laboratorio 3:  
 Laboratorio 4:  
 Laboratorio 5:  
