@@ -10,12 +10,11 @@ const (
 	ftpServerPath = "."       
 )
 
-//IronMoth
 //ElectricoRoca
 func main() {
 	config := goftp.Config{
 		User:     "grupo26",
-		Password: "IronMoth",
+		Password: "RocaElectrico",
 	}
 	client, err := goftp.DialConfig(config, ftpServerAddr)
 	if err != nil {

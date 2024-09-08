@@ -9,8 +9,8 @@ Instrucciones de uso:
 
 1) La tarea funciona correctamente 
 
-2) Para ejecutar la tarea, primero dirijase al directorio 'server' y en otra terminal dirijase al directorio 'cliente'
+2) Durante el laboratorio se logro obtener sin problema la pregunta via conexion TCP
 
-3) Una vez estando en cada directorio, primero ejecute el servidor con 'go run server.go'
+3) Debido a problemas con el servidor del laboratorio no se pudo obtener las otras preguntas mediante FTP
 
-4) Luego ejecute el cliente con 'go run client.go'
+4) En el directorio 'Capturas' se encuentran las fotos tomadas durante el laboratorio
