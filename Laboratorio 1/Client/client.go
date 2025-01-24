@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	tcp "main/Client/TCP"
-	udp "main/Client/UDP"
+	"main/Client/TCP"
+	"main/Client/UDP"
 	"os"
 )
 

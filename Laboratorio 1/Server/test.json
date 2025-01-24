@@ -1,0 +1,55 @@
+{
+    "Question": [
+        {
+            "Question": "¿Cuál es el planeta más cercano al Sol?",
+            "Alternatives": ["Marte", "Venus", "Mercurio", "Júpiter"],
+            "Answer": "Mercurio"
+        },
+        {
+            "Question": "¿En qué continente se encuentra el desierto del Sahara?",
+            "Alternatives": ["Asia", "América", "Australia", "África"],
+            "Answer": "África"
+        },
+        {
+            "Question": "¿Cuál es el idioma más hablado en el mundo?",
+            "Alternatives": ["Inglés", "Español", "Chino mandarín", "Árabe"],
+            "Answer": "Chino mandarín"
+        },
+        {
+            "Question": "¿Cuál es el océano más grande del mundo?",
+            "Alternatives": ["Océano Atlántico", "Océano Índico", "Océano Pacífico", "Océano Ártico"],
+            "Answer": "Océano Pacífico"
+        },
+        {
+            "Question": "¿Qué elemento químico tiene como símbolo H?",
+            "Alternatives": ["Helio", "Hidrógeno", "Hierro", "Carbono"],
+            "Answer": "Hidrógeno"
+        },
+        {
+            "Question": "¿Quién pintó la Mona Lisa?",
+            "Alternatives": ["Pablo Picasso", "Vincent van Gogh", "Leonardo da Vinci", "Miguel Ángel"],
+            "Answer": "Leonardo da Vinci"
+        },
+        {
+            "Question": "¿Cuál es el animal terrestre más rápido?",
+            "Alternatives": ["Tigre", "Guepardo", "León", "Elefante"],
+            "Answer": "Guepardo"
+        },
+        {
+            "Question": "¿En qué año llegó el hombre a la Luna por primera vez?",
+            "Alternatives": ["1965", "1969", "1972", "1959"],
+            "Answer": "1969"
+        },
+        {
+            "Question": "¿Cuál es el río más largo del mundo?",
+            "Alternatives": ["Nilo", "Amazonas", "Yangtsé", "Misisipi"],
+            "Answer": "Amazonas"
+        },
+        {
+            "Question": "¿Qué instrumento musical tiene teclas negras y blancas?",
+            "Alternatives": ["Guitarra", "Violín", "Piano", "Flauta"],
+            "Answer": "Piano"
+        }
+    ]
+    
+}

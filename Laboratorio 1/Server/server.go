@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"net"
 	"os"
@@ -10,65 +12,18 @@ import (
 	"time"
 )
 
-type Trivia struct {
-	Question     string
-	Alternatives [4]string
-	Answer       string
+type Questions struct {
+    Questions []Question `json:"Question"`
 }
 
-//Array de preguntas y respuestas
-var QA = []Trivia{
-	{
-		Question:     "¿Cuál es el planeta más cercano al Sol?",
-		Alternatives: [4]string{"Marte", "Venus", "Mercurio", "Júpiter"},
-		Answer:       "Mercurio",
-	},
-	{
-		Question:     "¿En qué continente se encuentra el desierto del Sahara?",
-		Alternatives: [4]string{"Asia", "América", "Australia", "África"},
-		Answer:       "África",
-	},
-	{
-		Question:     "¿Cuál es el idioma más hablado en el mundo?",
-		Alternatives: [4]string{"Inglés", "Español", "Chino mandarín", "Árabe"},
-		Answer:       "Chino mandarín",
-	},
-	{
-		Question:     "¿Cuál es el océano más grande del mundo?",
-		Alternatives: [4]string{"Océano Atlántico", "Océano Índico", "Océano Pacífico", "Océano Ártico"},
-		Answer:       "Océano Pacífico",
-	},
-	{
-		Question:     "¿Qué elemento químico tiene como símbolo H?",
-		Alternatives: [4]string{"Helio", "Hidrógeno", "Hierro", "Carbono"},
-		Answer:       "Hidrógeno",
-	},
-	{
-		Question:     "¿Quién pintó la Mona Lisa?",
-		Alternatives: [4]string{"Pablo Picasso", "Vincent van Gogh", "Leonardo da Vinci", "Miguel Ángel"},
-		Answer:       "Leonardo da Vinci",
-	},
-	{
-		Question:     "¿Cuál es el animal terrestre más rápido?",
-		Alternatives: [4]string{"Tigre", "Guepardo", "León", "Elefante"},
-		Answer:       "Guepardo",
-	},
-	{
-		Question:     "¿En qué año llegó el hombre a la Luna por primera vez?",
-		Alternatives: [4]string{"1965", "1969", "1972", "1959"},
-		Answer:       "1969",
-	},
-	{
-		Question:     "¿Cuál es el río más largo del mundo?",
-		Alternatives: [4]string{"Nilo", "Amazonas", "Yangtsé", "Misisipi"},
-		Answer:       "Amazonas",
-	},
-	{
-		Question:     "¿Qué instrumento musical tiene teclas negras y blancas?",
-		Alternatives: [4]string{"Guitarra", "Violín", "Piano", "Flauta"},
-		Answer:       "Piano",
-	},
+
+
+type Question struct {
+	Quest string `json:"Question"`
+	Alts [4]string `json:"Alternatives"`
+	Ans string `json:"Answer"`
 }
+
 
 
 
@@ -145,6 +100,30 @@ Retorno :
 	Nada, no retorna ningun valor
 */
 func ClientTCP(numeroPreguntas int, ip string, puerto int) {
+    jsonFile, err := os.Open("test.json")
+
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    fmt.Println("El JSON 'test.json' se cargo correctamente")
+    defer jsonFile.Close()
+
+    byteValue, _ := ioutil.ReadAll(jsonFile)
+
+    var question Questions
+
+    json.Unmarshal(byteValue, &question)
+
+
+
+	for i := 0; i < len(question.Questions); i++ {
+        fmt.Println("Pregunta: " + question.Questions[i].Quest)
+        fmt.Println("Alternativas: " + question.Questions[i].Alts[0] + ", " + question.Questions[i].Alts[1] + ", " + question.Questions[i].Alts[2] + ", " + question.Questions[i].Alts[3])
+        fmt.Println("Respeusta: " + question.Questions[i].Ans)
+    }
+
+	
 	// Escuchar en el puerto especificado
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", puerto))
 	if err != nil {
@@ -189,8 +168,8 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 		for {
 			if numeroPreguntas == numeroPreguntasRecibida {
 				for i := 0; i < numeroPreguntasRecibida; i++ {
-					trivia := QA[i%len(QA)]
-					pregunta := fmt.Sprintf("%s\n1. %s\n2. %s\n3. %s\n4. %s\n", trivia.Question, trivia.Alternatives[0], trivia.Alternatives[1], trivia.Alternatives[2], trivia.Alternatives[3])
+					trivia := question.Questions[i%len(question.Questions)]
+					pregunta := fmt.Sprintf("%s\n1. %s\n2. %s\n3. %s\n4. %s\n", trivia.Quest, trivia.Alts[0], trivia.Alts[1], trivia.Alts[2], trivia.Alts[3])
 					_, err := conn.Write([]byte(pregunta))
 					if err != nil {
 						fmt.Println("Error al enviar la pregunta:", err)
@@ -214,7 +193,7 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 						}
 						return
 					}
-					if respuestaIndex >= 0 && respuestaIndex < len(trivia.Alternatives) && trivia.Alternatives[respuestaIndex] == trivia.Answer {
+					if respuestaIndex >= 0 && respuestaIndex < len(trivia.Alts) && trivia.Alts[respuestaIndex] == trivia.Ans {
 						fmt.Println("Respuesta correcta")
 						respuestasCorrectas++
 						_, err = conn.Write([]byte("Respuesta correcta\n"))
@@ -242,7 +221,6 @@ func ClientTCP(numeroPreguntas int, ip string, puerto int) {
 		fmt.Println("Cliente desconectado")
 
 	}
-
 }
 
 
